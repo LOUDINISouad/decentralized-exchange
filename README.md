@@ -1,6 +1,7 @@
-# decentralized-exchange
+# Decentralized-exchange
 **Uniswap V2 using Foundry**
 This project is an implementation of Uniswap V2, a decentralized exchange protocol, using Foundry. Foundry is a powerful blockchain development platform that simplifies the process of creating and deploying smart contracts on Ethereum.
+
 # Installation and Setup
 - Clone the project:
 `git clone https://github.com/Amenokal-Labs/decentralized-exchange`
@@ -16,3 +17,5 @@ This project is an implementation of Uniswap V2, a decentralized exchange protoc
  
 - Or in case the folder is not empty use :
   `forge init --force`
+
+  
