@@ -12,6 +12,7 @@ contract LiquidityPoolTest is Test {
     LiquidityPool liquidityPool;
     address alice = vm.addr(0x1);
     address bob = vm.addr(0x2);
+    address chris = vm.addr(0x3);
 
     function setUp() public {
         tokenA = new MyToken("TokenA", "TA"); // Deploy your tokens A and B here
@@ -68,5 +69,39 @@ contract LiquidityPoolTest is Test {
         uint256 balanceAfterSwap = tokenB.balanceOf(alice);
 
         assert(balanceAfterSwap > balanceBeforeSwap); // Ensure tokenB balance increased after the swap
+    }
+    function testLpReceivesFees() public {
+        // mint token A and token B to alice 
+        tokenA.mint(alice, 1000e18);
+        tokenB.mint(alice, 2000e18);
+       
+        vm.startPrank(alice);
+        tokenA.approve(address(liquidityPool), 800e18);
+        tokenB.approve(address(liquidityPool), 1000e18);
+        vm.stopPrank();
+         // alice deposit a liquidity pool 
+        vm.startPrank(alice);
+        liquidityPool.deposit(800e18, 1000e18);
+        vm.stopPrank();
+        uint256 liquidityAmount = liquidityPool.calculateLiquidityAmount(8e20, 1e21);
+        assertEq(liquidityPool.liquidity(alice), liquidityAmount);
+
+        // bob swaps tokens A versus B
+        tokenA.mint(bob, 1000e18);
+        tokenB.mint(bob, 2000e18);
+        vm.startPrank(bob);
+        tokenA.approve(address(liquidityPool), 1e18);
+        vm.stopPrank();
+
+        uint256 balanceBeforeSwap = tokenB.balanceOf(bob);
+        vm.startPrank(bob);
+        liquidityPool.swap(1e18);
+        vm.stopPrank();
+        uint256 balanceAfterSwap = tokenB.balanceOf(bob);
+
+        assert(balanceAfterSwap > balanceBeforeSwap); // Ensure tokenB balance increased after the swap
+      
+
+
     }
 }

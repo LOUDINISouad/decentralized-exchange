@@ -10,6 +10,7 @@ contract ContractTest is Test {
     MyToken token;
     address alice = vm.addr(0x1);
     address bob = vm.addr(0x2);
+    address chris = vm.addr(0x3);
 
 
     function setUp() public {
@@ -54,6 +55,8 @@ contract ContractTest is Test {
         assertEq(token.balanceOf(alice), 2e18 - 0.7e18);
         assertEq(token.balanceOf(bob), 0.7e18);
     }
+
+   
 
 
   }
