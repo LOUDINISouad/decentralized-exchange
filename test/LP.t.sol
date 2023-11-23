@@ -71,7 +71,8 @@ contract LiquidityPoolTest is Test {
         assert(balanceAfterSwap > balanceBeforeSwap); // Ensure tokenB balance increased after the swap
     }
     function testLpReceivesFees() public {
-        // mint token A and token B to alice 
+        
+ // mint token A and token B to alice 
         tokenA.mint(alice, 1000e18);
         tokenB.mint(alice, 2000e18);
        
@@ -79,14 +80,14 @@ contract LiquidityPoolTest is Test {
         tokenA.approve(address(liquidityPool), 800e18);
         tokenB.approve(address(liquidityPool), 1000e18);
         vm.stopPrank();
-         // alice deposit a liquidity pool 
+// alice deposit a liquidity pool 
         vm.startPrank(alice);
         liquidityPool.deposit(800e18, 1000e18);
         vm.stopPrank();
         uint256 liquidityAmount = liquidityPool.calculateLiquidityAmount(8e20, 1e21);
         assertEq(liquidityPool.liquidity(alice), liquidityAmount);
 
-        // bob swaps tokens A versus B
+// bob swaps tokens A versus B
         tokenA.mint(bob, 1000e18);
         tokenB.mint(bob, 2000e18);
         vm.startPrank(bob);
@@ -100,7 +101,27 @@ contract LiquidityPoolTest is Test {
         uint256 balanceAfterSwap = tokenB.balanceOf(bob);
 
         assert(balanceAfterSwap > balanceBeforeSwap); // Ensure tokenB balance increased after the swap
+//chris swaps tokens B versus A
+        tokenB.mint(chris, 2500e18);
+        tokenA.mint(chris, 2200e18);
+        vm.startPrank(chris);
+        tokenA.approve(address(liquidityPool), 1e18);
+        tokenB.approve(address(liquidityPool), 50e18);
+        vm.stopPrank();
+       
+        vm.startPrank(chris);
+        liquidityPool.swap(1e18);
+        vm.stopPrank();
+        
+        assert(balanceAfterSwap > balanceBeforeSwap);
+// Alice Withdraw tokens 
+        vm.startPrank(alice);
+        liquidityPool.withdraw(240e18);
+        vm.stopPrank();
+
+// Verify that Alice has more tokens A than before depositing
       
+       assertEq(liquidityPool.liquidity(alice), liquidityAmount - 240e18);
 
 
     }
